@@ -9,14 +9,23 @@ import {
 import { Spacer } from "../../Components/Spacer/Spacer";
 import { useNavigate } from "react-router-dom";
 import { screen } from "../../routes/routeName";
+import { useDispatch, useSelector } from "react-redux";
+import { createUser } from "../../redux/reducers/userReducer";
+import { AppDispatch } from "../../redux/reducerStore/store";
+
 
 export const SignUp: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const user = useSelector((state: any) => state.createUser.user);
+
+
     const [userObject, setUserObject] = useState({
         firstName: '',
         lastName: '',
         email: "",
         password: "",
       });
+
     
       const navigate = useNavigate()
     
@@ -29,7 +38,7 @@ export const SignUp: React.FC = () => {
     
       const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log("submit", userObject);
+        dispatch(createUser(userObject))
       };
 
     return(

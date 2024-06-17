@@ -9,12 +9,18 @@ import {
 import { Spacer } from "../../Components/Spacer/Spacer";
 import { useNavigate } from "react-router-dom";
 import { screen } from "../../routes/routeName";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../redux/reducerStore/store";
+import { loginUser } from "../../redux/reducers/userReducer";
 
 export const SignIn = () => {
   const [userObject, setUserObject] = useState({
     email: "",
     password: "",
   });
+
+  const dispatch = useDispatch<AppDispatch>()
+  const user = useSelector((state: any) => state.createUser.user);
 
   const navigate = useNavigate()
 
@@ -27,7 +33,7 @@ export const SignIn = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("Form submitted with:", userObject);
+    dispatch(loginUser(userObject))
   };
 
   return (
