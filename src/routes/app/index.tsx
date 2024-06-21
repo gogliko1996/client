@@ -4,6 +4,7 @@ import { screen } from "../routeName";
 import { Home } from "../../Page/Home/Home";
 import { SignIn } from "../../Page/SignIn/SignIn";
 import { SignUp } from "../../Page/SignUp/SignUp";
+import { useSelector } from "react-redux";
 
 interface ProtectedRouteProps {
   user: boolean;
@@ -20,7 +21,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
 };
 
 export const AppRouter = React.memo(() => {
-  const [user, setUser] = useState(false);
+  const user = useSelector((state: any) => state.createUser.user);
 
   return (
     <BrowserRouter>
@@ -28,7 +29,7 @@ export const AppRouter = React.memo(() => {
         <Route
           path={screen.home}
           element={
-            <ProtectedRoute user={user}>
+            <ProtectedRoute user={!!user}>
               <Home />
             </ProtectedRoute>
           }

@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import { appConfig } from "../../constant/App";
+import api from "../../utils/api/api";
 
 interface UserState {
   status: boolean;
-  user: any[];
-  token: string | null;
+  user: UserObject | any;
+  createUser: string | any;
   error: string | null;
 }
 
@@ -18,29 +17,30 @@ interface UserObject {
 
 const initialState: UserState = {
   status: false,
-  user: [],
-  token: null,
+  user: {},
+  createUser: {},
   error: null,
 };
 
 export const createUser = createAsyncThunk(
   "user/createUser",
   async (userObject: UserObject) => {
-    const data = await axios.post(
-      `${appConfig.apiUrl}${"/register"}`,
-      userObject
-    );
-    return [];
+    const { data } = await api.post("/register", userObject);
+    return data;
   }
 );
+
+export const getUser = createAsyncThunk("getUser/user", async () => {
+  const data = await api.get("/protected");
+  return data;
+});
 
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userObject: UserObject) => {
-    const data = await axios.post(`${appConfig.apiUrl}${"/login"}`, userObject);
-    console.log("data", data);
-
-    return data.data.token;
+    const { data } = await api.post("/login", userObject);
+    localStorage.setItem("accessToken", data.accessToken);
+    return data;
   }
 );
 
@@ -57,12 +57,27 @@ const createUserSlice = createSlice({
         createUser.fulfilled,
         (state, action: PayloadAction<UserObject[]>) => {
           state.status = false;
-          state.user = action.payload;
+          state.createUser = action.payload;
         }
       )
       .addCase(createUser.rejected, (state, action) => {
         state.status = false;
-        state.user = [];
+        state.error = action.error.message || "Failed to create user";
+      });
+
+    builder
+      .addCase(getUser.pending, (state) => {
+        state.status = true;
+      })
+      .addCase(
+        getUser.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.status = false;
+          state.user = action.payload?.data.user;
+        }
+      )
+      .addCase(getUser.rejected, (state, action) => {
+        state.status = false;
         state.error = action.error.message || "Failed to create user";
       });
 
@@ -70,14 +85,12 @@ const createUserSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.status = true;
       })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(loginUser.fulfilled, (state) => {
         state.status = false;
-        state.token = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = false;
-        state.user = [];
-        state.error = action.error.message || "Failed to create user";
+        state.error = action.error.message || "Failed to login";
       });
   },
 });

@@ -11,18 +11,18 @@ import { useNavigate } from "react-router-dom";
 import { screen } from "../../routes/routeName";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../redux/reducerStore/store";
-import { loginUser } from "../../redux/reducers/userReducer";
+import { loginUser, getUser } from "../../redux/reducers/userReducer";
 
 export const SignIn = () => {
+  const creatUser = useSelector((state: any) => state.createUser.createUser);
   const [userObject, setUserObject] = useState({
-    email: "",
+    email: creatUser.email ? creatUser.email : '',
     password: "",
   });
 
-  const dispatch = useDispatch<AppDispatch>()
-  const user = useSelector((state: any) => state.createUser.user);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e: any) => {
     setUserObject({
@@ -33,7 +33,16 @@ export const SignIn = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(loginUser(userObject))
+    dispatch(loginUser(userObject)).then((data) => {
+      if (data.type === "user/loginUser/fulfilled") {
+        dispatch(getUser()).then((user) => {
+          if(user.type === 'getUser/user/fulfilled') {
+            navigate(screen.home)
+          }
+          
+        })
+      }
+    });
   };
 
   return (
@@ -64,7 +73,9 @@ export const SignIn = () => {
               </Spacer>
               <Row justifyContent="space-between">
                 <button type="submit">Submit</button>
-                <button type="button" onClick={() => navigate(screen.signUp)}>SignUp</button>
+                <button type="button" onClick={() => navigate(screen.signUp)}>
+                  SignUp
+                </button>
               </Row>
             </form>
           </Card>
