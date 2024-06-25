@@ -17,7 +17,7 @@ interface UserObject {
 
 const initialState: UserState = {
   status: false,
-  user: {},
+  user: null,
   createUser: {},
   error: null,
 };
