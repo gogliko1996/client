@@ -2,7 +2,13 @@ import React from "react";
 
 export const Home: React.FC = () => {
 
-    return(
-        <p>Home</p>
-    )
-}
+    const a: number = 1
+
+
+  return(
+    <>
+     <p>{a}</p>
+     <button onClick={() => a + 1}>dgdgdg</button>
+    </>
+    );
+};
