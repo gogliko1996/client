@@ -16,7 +16,7 @@ import { loginUser, getUser } from "../../redux/reducers/userReducer";
 export const SignIn = () => {
   const creatUser = useSelector((state: any) => state.createUser.createUser);
   const [userObject, setUserObject] = useState({
-    email: creatUser.email ? creatUser.email : '',
+    email: creatUser.email ? creatUser.email : "",
     password: "",
   });
 
@@ -36,11 +36,10 @@ export const SignIn = () => {
     dispatch(loginUser(userObject)).then((data) => {
       if (data.type === "user/loginUser/fulfilled") {
         dispatch(getUser()).then((user) => {
-          if(user.type === 'getUser/user/fulfilled') {
-            navigate(screen.home)
+          if (user.type === "getUser/user/fulfilled") {
+            navigate(screen.home);
           }
-          
-        })
+        });
       }
     });
   };
@@ -72,7 +71,7 @@ export const SignIn = () => {
                 />
               </Spacer>
               <Row justifyContent="space-between">
-                <button type="submit">Submit</button>
+                <button  type="submit">Submit</button>
                 <button type="button" onClick={() => navigate(screen.signUp)}>
                   SignUp
                 </button>

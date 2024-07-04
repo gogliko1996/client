@@ -35,8 +35,6 @@ export const SignUp: React.FC = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     dispatch(createUser(userObject)).then((data) => {
-      console.log(data.type);
-
       if (data.type === "user/createUser/fulfilled") {
         navigate(screen.signIn);
       }
