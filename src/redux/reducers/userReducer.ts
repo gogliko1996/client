@@ -39,7 +39,9 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userObject: UserObject) => {
     const { data } = await api.post("/login", userObject);
+    
     localStorage.setItem("accessToken", data.accessToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
     return data;
   }
 );

@@ -10,11 +10,11 @@ import { Spacer } from "../../Components/Spacer/Spacer";
 import { useNavigate } from "react-router-dom";
 import { screen } from "../../routes/routeName";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../redux/reducerStore/store";
+import { AppDispatch, RootState } from "../../redux/reducerStore/store";
 import { loginUser, getUser } from "../../redux/reducers/userReducer";
 
 export const SignIn = () => {
-  const creatUser = useSelector((state: any) => state.createUser.createUser);
+  const creatUser = useSelector((state: RootState) => state.createUser.createUser);
   const [userObject, setUserObject] = useState({
     email: creatUser.email ? creatUser.email : "",
     password: "",

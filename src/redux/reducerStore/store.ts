@@ -1,9 +1,11 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { thunk, ThunkMiddleware } from 'redux-thunk'; 
 import  createUserSlice  from '../reducers/userReducer';
+import createTodoreducer from '../reducers/todoreducer'
 
 const rootReducer = combineReducers({
-  createUser: createUserSlice
+  createUser: createUserSlice,
+  todolist: createTodoreducer,
 });
 
 

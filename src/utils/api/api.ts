@@ -24,10 +24,11 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const newToken = await refreshToken();
       api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+      localStorage.setItem('accessToken', newToken);  
       return api(originalRequest);
     }
     return Promise.reject(error);
@@ -43,3 +44,5 @@ const refreshToken = async () => {
 };
 
 export default api;
+
+
