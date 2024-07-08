@@ -35,6 +35,7 @@ export const Home: React.FC = () => {
   const { todos } = useSelector((state: RootState) => state.todolist);
 
   const userId = user.id;
+  
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -120,6 +121,7 @@ export const Home: React.FC = () => {
           </Spacer>
         </form>
       </Spacer>
+
       <Spacer>
         {todos?.map((item: TodoObject, index: number) => (
           <Row key={index} width={700} justifyContent="space-between">
@@ -143,7 +145,7 @@ export const Home: React.FC = () => {
                   width={100}
                   name="status"
                   value={updateTodoList.status}
-                  onChange={handleChange}
+                  onChange={updateHandleChange}
                 >
                   <option value="activ">Activ</option>
                   <option value="noqctiv">Not activ</option>
