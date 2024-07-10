@@ -15,6 +15,8 @@ import {
   updateTodo,
 } from "../../redux/reducers/todoreducer";
 import { Spacer } from "../../Components/Spacer/Spacer";
+import { colors, ColorTypes } from "../../utils/colors/colors";
+import styled from "styled-components";
 
 export const Home: React.FC = () => {
   const [todoList, setTodoList] = useState({
@@ -35,7 +37,6 @@ export const Home: React.FC = () => {
   const { todos } = useSelector((state: RootState) => state.todolist);
 
   const userId = user.id;
-  
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -124,25 +125,28 @@ export const Home: React.FC = () => {
 
       <Spacer>
         {todos?.map((item: TodoObject, index: number) => (
-          <Row key={index} width={700} justifyContent="space-between">
+          <Row key={index} width={900} justifyContent="space-between">
             {isEditing && currentTodoId === item.id ? (
               <>
                 <Input
                   width={100}
+                  height={30}
                   name="title"
                   type="text"
                   value={updateTodoList.title}
                   onChange={updateHandleChange}
                 />
-                <Input
-                  width={100}
-                  name="description"
-                  type="text"
-                  value={updateTodoList.description}
-                  onChange={updateHandleChange}
-                />
+                  <Input
+                    width={100}
+                    height={30}
+                    name="description"
+                    type="text"
+                    value={updateTodoList.description}
+                    onChange={updateHandleChange}
+                  />
                 <Select
                   width={100}
+                  height={30}
                   name="status"
                   value={updateTodoList.status}
                   onChange={updateHandleChange}
@@ -150,25 +154,45 @@ export const Home: React.FC = () => {
                   <option value="activ">Activ</option>
                   <option value="noqctiv">Not activ</option>
                 </Select>
-                <button onClick={saveUpdateTodo}>Save</button>
-                <button
-                  onClick={() => {
-                    setIsEditing(false);
-                    setCurrentTodoId(null);
-                  }}
-                >
-                  Cancel
-                </button>
+                <div>
+                  <Button color="green" onClick={saveUpdateTodo}>
+                    Save
+                  </Button>
+
+                  <Button
+                    color="red"
+                    onClick={() => {
+                      setIsEditing(false);
+                      setCurrentTodoId(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+                <Spacer mb={20} mt={40}/>
               </>
             ) : (
               <>
+            
                 <Text>{item.title}</Text>
                 <Text>{item.description}</Text>
                 <Text>{item.status}</Text>
-                <button onClick={() => handleUpdate(item)}>Update</button>
-                <button onClick={() => deleteTodos(Number(item.id))}>
-                  Delete
-                </button>
+                <div className="inline-flex">
+
+                  <Button
+                    onClick={() => handleUpdate(item)}
+                    color="canaryYellow"
+                  >
+                    Update
+                  </Button>
+                  <Button
+                    color="red"
+                    onClick={() => deleteTodos(Number(item.id))}
+                  >
+                    Delete
+                  </Button>
+                </div>
+                <Spacer mb={20}/>
               </>
             )}
           </Row>
@@ -177,3 +201,15 @@ export const Home: React.FC = () => {
     </>
   );
 };
+
+interface ButtonProps {
+  color?: ColorTypes;
+}
+
+const Button = styled.button<ButtonProps>`
+  background-color: ${({ color }) => (color ? colors[color] : "black")};
+  border: none;
+  margin-right: 10px;
+  border-radius: 10px;
+  padding: 10px;
+`;

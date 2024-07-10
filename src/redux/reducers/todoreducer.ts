@@ -82,6 +82,7 @@ const createTodoreducer = createSlice({
     addTodoOptimistic: (state, action: PayloadAction<TodoObject>) => {
       state.todos?.push(action.payload);
     },
+    
     replaceTempTodoId: (
       state,
       action: PayloadAction<{ tempId: number; actualId: number }>
@@ -93,6 +94,7 @@ const createTodoreducer = createSlice({
         state.todos![index].id = action.payload.actualId;
       }
     },
+
     updateTodoOptimistic: (
       state,
       action: PayloadAction<{ id: number; updateData: TodoObject }>

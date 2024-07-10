@@ -74,7 +74,7 @@ export const Card = styled.div<CardProps>`
 
 export const Input = styled.input<InputProps>`
   width: ${({ width }) => (width ? `${width}px` : '100%')};
-  height: ${({ height }) => (height ? height : '48px')};
+  height: ${({ height }) => (height ? `${height}px` : '48px')};
   border-radius: ${({ borderRadius }) =>
     borderRadius ? `${borderRadius}px` : "12px"};
   border: ${({ border }) => border || "1px solid"};
