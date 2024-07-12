@@ -29,6 +29,7 @@ export interface TextProps {
 
 export interface CardProps {
   children?: ReactElement
+  minHeight?: number
   width?: number | string | any;
   height?: number | string | any;
   color?: ColorTypes;
@@ -47,6 +48,12 @@ export interface CardProps {
   backgroundImage?: string; 
   border?: string;
   borderColor?: ColorTypes;
+}
+
+export interface ButtonProps {
+  color?: ColorTypes;
+  width?: number;
+  height?: number;
 }
 
 export interface InputProps {

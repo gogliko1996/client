@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/reducerStore/store";
 import {
+  Button,
   Input,
   Row,
   Select,
@@ -15,8 +16,7 @@ import {
   updateTodo,
 } from "../../redux/reducers/todoreducer";
 import { Spacer } from "../../Components/Spacer/Spacer";
-import { colors, ColorTypes } from "../../utils/colors/colors";
-import styled from "styled-components";
+import { Dnd } from "../../Components/Dnd/Dnd";
 
 export const Home: React.FC = () => {
   const [todoList, setTodoList] = useState({
@@ -198,18 +198,11 @@ export const Home: React.FC = () => {
           </Row>
         ))}
       </Spacer>
+      <Dnd/>
     </>
   );
 };
 
-interface ButtonProps {
-  color?: ColorTypes;
-}
 
-const Button = styled.button<ButtonProps>`
-  background-color: ${({ color }) => (color ? colors[color] : "black")};
-  border: none;
-  margin-right: 10px;
-  border-radius: 10px;
-  padding: 10px;
-`;
+
+

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import {
+  ButtonProps,
   CardProps,
   ConteinerProps,
   ImageProps,
@@ -47,6 +48,7 @@ export const Text = styled.p<TextProps>`
 export const Card = styled.div<CardProps>`
   width: ${({ width }) => `${width}px` || "100%"};
   height: ${({ height }) => `${height}px`};
+  min-height: ${({ minHeight }) => minHeight && `${minHeight}px`};
   padding-left: ${({ paddingLeft }) => `${paddingLeft}px`};
   padding-right: ${({ paddingRight }) => `${paddingRight}px`};
   padding-top: ${({ paddingTop }) => `${paddingTop}px`};
@@ -70,6 +72,16 @@ export const Card = styled.div<CardProps>`
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+`;
+
+export const Button = styled.button<ButtonProps>`
+background-color: ${({ color }) => (color ? colors[color] : "wite")};
+width: ${({ width }) => width && `${width}px`};
+height: ${({ height }) => `${height}px`};
+border: none;
+margin-right: 10px;
+border-radius: 10px;
+padding: 10px;
 `;
 
 export const Input = styled.input<InputProps>`
