@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import api from "../../utils/api/api";
+import { RootState } from "../reducerStore/store";
 
 export interface TodoObject {
   title: string;
@@ -23,7 +24,11 @@ const initialState: UserState = {
 export const creatTodo = createAsyncThunk(
   "todo/createTodo",
   async (todoList: TodoObject, { dispatch, getState }) => {
-    const tempId = Date.now();
+    const state = getState() as RootState;
+    const todos: TodoObject[] | null = state.todolist.todos || [];
+    const lastElement: TodoObject = todos[todos.length - 1];
+    const tempId: number = lastElement ? Number(lastElement.id) + 1 : 1;
+    
     dispatch(addTodoOptimistic({ ...todoList, id: tempId }));
 
     try {

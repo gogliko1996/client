@@ -32,7 +32,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const [todos, setTodos] = useState<Dndtype[]>([]);
   const [inProgreses, setInProgreses] = useState<Dndtype[]>([]);
   const [done, setDone] = useState<Dndtype[]>([]);
-  const [details, setDetails] = useState<Dndtype>()
+  const [details, setDetails] = useState<Dndtype>();
 
   const [draggedItem, setDraggedItem] = useState<Dndtype | null>(null);
   const [showTodoInput, setShowTodoInput] = useState<boolean>(false);
@@ -97,7 +97,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
     });
   };
 
-  const hundlerSubmit = (target: string) => {
+  const hundlerSubmit = (target: string) => {    
     dispatch(creatTodo({ ...createTodoList, status: target, userId })).then(
       () => {
         setCreateTodoList({
@@ -109,9 +109,9 @@ export const Dnd: React.FC<DndProps> = (props) => {
     );
   };
 
-  const detailsTodos = (option: string, item: Dndtype, source: string ) => {
+  const detailsTodos = (option: string, item: Dndtype, source: string) => {
     if (option === "details") {
-      setDetails(item)
+      setDetails(item);
       setShowModal(true);
     }
 
@@ -163,10 +163,11 @@ export const Dnd: React.FC<DndProps> = (props) => {
     if (source === target) return;
 
     const todo = heretofindtheobject.find((item) => item.id === id)!;
+    const cangeStatusTodo = {...todo, status: target}
     wheretofiltertheobject(
       heretofindtheobject.filter((item) => item.id !== id)
     );
-    wheremovetheobject([...removedObject, todo]);
+    wheremovetheobject([...removedObject, cangeStatusTodo]);
 
     const { title, description } = todo;
     if (title && description) {
@@ -202,13 +203,6 @@ export const Dnd: React.FC<DndProps> = (props) => {
       );
     }
   };
-
-  // const handleAddTask = () => {
-  //   if (newTodoName.trim()) {
-  //     setTodos([...todos, { id: Date.now(), taskName: newTodoName }]);
-  //     setNewTodoName("");
-  //   }
-  // };
 
   const hanhleClickButton = (target: string) => {
     if (target === "todo") {
