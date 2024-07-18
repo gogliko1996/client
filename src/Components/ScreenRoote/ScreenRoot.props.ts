@@ -57,6 +57,8 @@ export interface ButtonProps {
 }
 
 export interface InputProps {
+  boxShadow?: string; 
+  textShadow?: string;
   width?: number | string | any;
   height?: number | string | any;
   border?: string;

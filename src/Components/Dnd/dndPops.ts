@@ -1,9 +1,14 @@
+import { TodoObject } from "../../redux/reducers/todoreducer";
 
+export interface Dndtype {
+  id: number;
+  description?: string;
+  status?: string;
+  title?: string;
+  source?: string;
+  value?: string;
+}
 
 export interface DndProps {
-    id: number; 
-    taskName?: string; 
-    status?: string; 
-    input?: boolean 
-    source?: string
+  todoList: TodoObject[] | null;
 }

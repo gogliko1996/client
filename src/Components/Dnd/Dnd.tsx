@@ -1,4 +1,4 @@
-import React, { DragEvent, useState } from "react";
+import React, { ChangeEvent, DragEvent, useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -8,22 +8,112 @@ import {
   Text,
 } from "../ScreenRoote/ScreenRoote";
 import { Spacer } from "../Spacer/Spacer";
-import { DndProps } from "./dndPops";
+import { DndProps, Dndtype } from "./dndPops";
+import { IconButtom } from "./iconButton";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/reducerStore/store";
+import {
+  creatTodo,
+  deleteTodo,
+  getTodo,
+  updateTodo,
+} from "../../redux/reducers/todoreducer";
 
-export const Dnd: React.FC = () => {
-  const [todos, setTodos] = useState<DndProps[]>([
-    { id: 1, taskName: "title" },
-    { id: 2, taskName: "description" },
-    { id: 3, taskName: "todo" },
-  ]);
+export const Dnd: React.FC<DndProps> = (props) => {
+  const { todoList } = props;
 
-  const [inProgreses, setInProgreses] = useState<DndProps[]>([]);
-  const [done, setDone] = useState<DndProps[]>([]);
+  const [createTodoList, setCreateTodoList] = useState({
+    title: "",
+    description: "",
+    status: "todo",
+  });
 
-  const [draggedItem, setDraggedItem] = useState<DndProps | null>(null);
-  const [showAddInput, setShowAddInput] = useState<boolean>(false);
+  const [todos, setTodos] = useState<Dndtype[]>([]);
+  const [inProgreses, setInProgreses] = useState<Dndtype[]>([]);
+  const [done, setDone] = useState<Dndtype[]>([]);
 
-  const [newTodoName, setNewTodoName] = useState<string>("");
+  const [draggedItem, setDraggedItem] = useState<Dndtype | null>(null);
+  const [showTodoInput, setShowTodoInput] = useState<boolean>(false);
+  const [showInProgresInput, setShowInProgresInput] = useState<boolean>(false);
+  const [showDoneInput, setShowDoneInput] = useState<boolean>(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const user = useSelector((state: RootState) => state.createUser.user);
+
+  const userId = user.id;
+
+  useEffect(() => {
+    todoList?.map((item) => {
+      if (item.status === "todo") {
+        if (!todos.some((todo) => todo.id === item.id)) {
+          setTodos((prevTodos) => [
+            ...prevTodos,
+            {
+              id: Number(item.id),
+              description: item.description,
+              title: item.title,
+              status: item.status,
+            },
+          ]);
+        }
+      } else if (item.status === "inProgres") {
+        if (!inProgreses.some((inProgres) => inProgres.id === item.id)) {
+          setInProgreses((prevInProgreses) => [
+            ...prevInProgreses,
+            {
+              id: Number(item.id),
+              description: item.description,
+              title: item.title,
+              status: item.status,
+            },
+          ]);
+        }
+      } else if (item.status === "done") {
+        if (!done.some((doneItem) => doneItem.id === item.id)) {
+          setDone((prevDone) => [
+            ...prevDone,
+            {
+              id: Number(item.id),
+              description: item.description,
+              title: item.title,
+              status: item.status,
+            },
+          ]);
+        }
+      }
+    });
+  }, [todoList]);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setCreateTodoList({
+      ...createTodoList,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const hundlerSubmit = (target: string) => {
+    dispatch(creatTodo({ ...createTodoList, status: target, userId })).then(
+      () => {
+        setCreateTodoList({
+          title: "",
+          description: "",
+          status: target,
+        });
+      }
+    );
+  };
+
+  const detailsTodos = (option: string, id: number, source: string) => {
+    if (option === "delete") {
+      dispatch(deleteTodo(id)).then(() => {
+        dispatch(getTodo(userId));
+        handleDeleteTask(id, source);
+      });
+    }
+  };
 
   const handleDragStart = (
     e: DragEvent<HTMLDivElement>,
@@ -46,19 +136,19 @@ export const Dnd: React.FC = () => {
     const { id, source } = draggedItem;
 
     const heretofindtheobject =
-      source === "InProgres" ? inProgreses : source === "todos" ? todos : done;
+      source === "inProgres" ? inProgreses : source === "todo" ? todos : done;
     const removedObject =
-      target === "InProgres" ? inProgreses : target === "todos" ? todos : done;
+      target === "inProgres" ? inProgreses : target === "todo" ? todos : done;
     const wheremovetheobject =
-      target === "InProgres"
+      target === "inProgres"
         ? setInProgreses
-        : target === "todos"
+        : target === "todo"
         ? setTodos
         : setDone;
     const wheretofiltertheobject =
-      source === "InProgres"
+      source === "inProgres"
         ? setInProgreses
-        : source === "todos"
+        : source === "todo"
         ? setTodos
         : setDone;
 
@@ -70,58 +160,90 @@ export const Dnd: React.FC = () => {
     );
     wheremovetheobject([...removedObject, todo]);
 
+    const { title, description } = todo;
+    if (title && description) {
+      dispatch(
+        updateTodo({
+          id: Number(todo.id),
+          updateData: { title, description, status: target },
+        })
+      );
+    }
+
     setDraggedItem(null);
   };
 
   const handleInputChange = (id: number, value: string, source: string) => {
-    if (source === "todos") {
+    if (source === "todo") {
       setTodos(
-        todos.map((item) =>
-          item.id === id ? { ...item, taskName: value } : item
-        )
+        todos.map((item) => (item.id === id ? { ...item, value: value } : item))
       );
     }
 
-    if (source === "InProgres") {
+    if (source === "inProgres") {
       setInProgreses(
         inProgreses.map((item) =>
-          item.id === id ? { ...item, taskName: value } : item
+          item.id === id ? { ...item, value: value } : item
         )
       );
     }
 
     if (source === "done") {
       setDone(
-        done.map((item) =>
-          item.id === id ? { ...item, taskName: value } : item
-        )
+        done.map((item) => (item.id === id ? { ...item, value: value } : item))
       );
     }
   };
 
-  const handleAddTask = () => {
-    if (newTodoName.trim()) {
-      setTodos([...todos, { id: Date.now(), taskName: newTodoName }]);
-      setNewTodoName("");
+  // const handleAddTask = () => {
+  //   if (newTodoName.trim()) {
+  //     setTodos([...todos, { id: Date.now(), taskName: newTodoName }]);
+  //     setNewTodoName("");
+  //   }
+  // };
+
+  const hanhleClickButton = (target: string) => {
+    if (target === "todo") {
+      if (showTodoInput) {
+        hundlerSubmit(target);
+        setShowTodoInput(!showTodoInput);
+      } else {
+        setShowTodoInput(!showTodoInput);
+      }
+      return;
+    }
+    if (target === "inProgres") {
+      if (showInProgresInput) {
+        hundlerSubmit(target);
+        setShowInProgresInput(!showInProgresInput);
+      } else {
+        setShowInProgresInput(!showInProgresInput);
+      }
+      return;
+    }
+    if (target === "done") {
+      if (showDoneInput) {
+        hundlerSubmit(target);
+        setShowDoneInput(!showDoneInput);
+      } else {
+        setShowDoneInput(!showDoneInput);
+      }
     }
   };
 
-  const hanhleClickButton = () => {
-    if (showAddInput) {
-      handleAddTask();
-      setShowAddInput(!showAddInput);
-    } else {
-      setShowAddInput(!showAddInput);
+  const handleDeleteTask = (id: number, source: string) => {
+    if (source === "todo") {
+      setTodos(todos.filter((item) => item.id !== id));
+    }
+
+    if (source === "inProgres") {
+      setInProgreses(inProgreses.filter((item) => item.id !== id));
+    }
+
+    if (source === "done") {
+      setDone(done.filter((item) => item.id !== id));
     }
   };
-
-  //   const handleDeleteTask = (id: number, source: string) => {
-  //     if (source === "todos") {
-  //       setTodos(todos.filter((item) => item.id !== id));
-  //     } else {
-  //       setInProgreses(inProgreses.filter((item) => item.id !== id));
-  //     }
-  //   };
 
   return (
     <div>
@@ -130,52 +252,85 @@ export const Dnd: React.FC = () => {
           <Card
             width={300}
             paddingLeft={30}
-            paddingRight={30}
+            paddingRight={10}
             paddingBottom={30}
             minHeight={100}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "todos")}
+            onDrop={(e) => handleDrop(e, "todo")}
           >
             <Conteiner>
-              <Row>
+              <Row justifyContent="space-between">
                 <Text>ToDo</Text>
               </Row>
               {todos.map((item) => (
                 <Conteiner
                   key={item.id}
                   draggable
-                  onDragStart={(e) => handleDragStart(e, item.id, "todos")}
+                  onDragStart={(e) => handleDragStart(e, item.id, "todo")}
                 >
                   <Spacer mb={10}>
-                    <Input
-                      type="text"
-                      height={35}
-                      value={item.taskName}
-                      onChange={(e) =>
-                        handleInputChange(item.id, e.target.value, "todos")
-                      }
-                    />
+                    <Spacer mb={-10}>
+                      <Text>Title</Text>
+                    </Spacer>
+                    <Row justifyContent="space-between" alignItems="center">
+                      <Input
+                        type="text"
+                        width={200}
+                        height={35}
+                        placeholder={item.title}
+                        disabled
+                        onChange={(e) =>
+                          handleInputChange(item.id, e.target.value, "todo")
+                        }
+                      />
+                      <IconButtom
+                        onClick={(e) => detailsTodos(e, item.id, "todo")}
+                      />
+                    </Row>
                   </Spacer>
                 </Conteiner>
               ))}
-              {showAddInput && (
-                <Input
-                  value={newTodoName}
-                  onChange={(e) => setNewTodoName(e.target.value)}
-                />
+              {showTodoInput && (
+                <Spacer mt={20} mb={40}>
+                  <form onSubmit={(e) => e.preventDefault()}>
+                    <Input
+                      width={240}
+                      height={35}
+                      name="title"
+                      type="text"
+                      placeholder="title"
+                      value={createTodoList.title}
+                      onChange={handleChange}
+                    />
+                    <Spacer mb={10} mt={10}>
+                      <Input
+                        width={240}
+                        height={60}
+                        name="description"
+                        type="text"
+                        placeholder="descriptions"
+                        value={createTodoList.description}
+                        onChange={handleChange}
+                      />
+                    </Spacer>
+                  </form>
+                </Spacer>
               )}
               <Spacer mt={20}>
                 <Row>
                   <Button
-                    color="green"
-                    onClick={hanhleClickButton}
+                    color="wite"
+                    onClick={() => hanhleClickButton("todo")}
                     height={35}
                     width={100}
                   >
-                    {!showAddInput ? "ADD card" : "SAVE"}
+                    {!showTodoInput ? "ADD card" : "SAVE"}
                   </Button>
-                  {showAddInput && <Button onClick={() => setShowAddInput(false)}>Close</Button>}
-                  
+                  {showTodoInput && (
+                    <Button onClick={() => setShowTodoInput(false)}>
+                      Close
+                    </Button>
+                  )}
                 </Row>
               </Spacer>
             </Conteiner>
@@ -187,10 +342,10 @@ export const Dnd: React.FC = () => {
             width={300}
             minHeight={100}
             paddingLeft={30}
-            paddingRight={30}
+            paddingRight={10}
             paddingBottom={30}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "InProgres")}
+            onDrop={(e) => handleDrop(e, "inProgres")}
           >
             <Conteiner>
               <Row>
@@ -202,25 +357,79 @@ export const Dnd: React.FC = () => {
                     key={item.id}
                     draggable
                     onDragStart={(e) =>
-                      handleDragStart(e, item.id, "InProgres")
+                      handleDragStart(e, item.id, "inProgres")
                     }
                   >
                     <Spacer mb={10}>
-                      <Input
-                        type="text"
-                        height={35}
-                        value={item.taskName}
-                        onChange={(e) =>
-                          handleInputChange(
-                            item.id,
-                            e.target.value,
-                            "InProgres"
-                          )
-                        }
-                      />
+                      <Spacer mb={-10}>
+                        <Text>title</Text>
+                      </Spacer>
+                      <Row justifyContent="space-between" alignItems="center">
+                        <Input
+                          type="text"
+                          width={200}
+                          height={35}
+                          placeholder={item.title}
+                          disabled
+                          onChange={(e) =>
+                            handleInputChange(
+                              item.id,
+                              e.target.value,
+                              "inProgres"
+                            )
+                          }
+                        />
+                        <IconButtom
+                          onClick={(e) => detailsTodos(e, item.id, "inProgres")}
+                        />
+                      </Row>
                     </Spacer>
                   </Conteiner>
                 ))}
+
+                {showInProgresInput && (
+                  <Spacer mt={20} mb={40}>
+                    <form onSubmit={(e) => e.preventDefault()}>
+                      <Input
+                        width={240}
+                        height={35}
+                        name="title"
+                        type="text"
+                        placeholder="title"
+                        value={createTodoList.title}
+                        onChange={handleChange}
+                      />
+                      <Spacer mb={10} mt={10}>
+                        <Input
+                          width={240}
+                          height={60}
+                          name="description"
+                          type="text"
+                          placeholder="descriptions"
+                          value={createTodoList.description}
+                          onChange={handleChange}
+                        />
+                      </Spacer>
+                    </form>
+                  </Spacer>
+                )}
+                <Spacer mt={20}>
+                  <Row>
+                    <Button
+                      color="wite"
+                      onClick={() => hanhleClickButton("inProgres")}
+                      height={35}
+                      width={100}
+                    >
+                      {!showInProgresInput ? "ADD card" : "SAVE"}
+                    </Button>
+                    {showInProgresInput && (
+                      <Button onClick={() => setShowInProgresInput(false)}>
+                        Close
+                      </Button>
+                    )}
+                  </Row>
+                </Spacer>
               </Conteiner>
             </Conteiner>
           </Card>
@@ -231,7 +440,7 @@ export const Dnd: React.FC = () => {
             width={300}
             minHeight={100}
             paddingLeft={30}
-            paddingRight={30}
+            paddingRight={10}
             paddingBottom={30}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, "done")}
@@ -248,17 +457,70 @@ export const Dnd: React.FC = () => {
                     onDragStart={(e) => handleDragStart(e, item.id, "done")}
                   >
                     <Spacer mb={10}>
-                      <Input
-                        type="text"
-                        height={35}
-                        value={item.taskName}
-                        onChange={(e) =>
-                          handleInputChange(item.id, e.target.value, "done")
-                        }
-                      />
+                      <Spacer mb={-10}>
+                        <Text>Title</Text>
+                      </Spacer>
+                      <Row justifyContent="space-between" alignItems="center">
+                        <Input
+                          type="text"
+                          width={200}
+                          height={35}
+                          placeholder={item.title}
+                          disabled
+                          onChange={(e) =>
+                            handleInputChange(item.id, e.target.value, "done")
+                          }
+                        />
+                        <IconButtom
+                          onClick={(e) => detailsTodos(e, item.id, "done")}
+                        />
+                      </Row>
                     </Spacer>
                   </Conteiner>
                 ))}
+                {showDoneInput && (
+                  <Spacer mt={20} mb={40}>
+                    <form onSubmit={(e) => e.preventDefault()}>
+                      <Input
+                        width={240}
+                        height={35}
+                        name="title"
+                        type="text"
+                        placeholder="title"
+                        value={createTodoList.title}
+                        onChange={handleChange}
+                      />
+                      <Spacer mb={10} mt={10}>
+                        <Input
+                          width={240}
+                          height={60}
+                          name="description"
+                          type="text"
+                          placeholder="descriptions"
+                          value={createTodoList.description}
+                          onChange={handleChange}
+                        />
+                      </Spacer>
+                    </form>
+                  </Spacer>
+                )}
+                <Spacer mt={20}>
+                  <Row>
+                    <Button
+                      color="wite"
+                      onClick={() => hanhleClickButton("done")}
+                      height={35}
+                      width={100}
+                    >
+                      {!showDoneInput ? "ADD card" : "SAVE"}
+                    </Button>
+                    {showDoneInput && (
+                      <Button onClick={() => setShowDoneInput(false)}>
+                        Close
+                      </Button>
+                    )}
+                  </Row>
+                </Spacer>
               </Conteiner>
             </Conteiner>
           </Card>

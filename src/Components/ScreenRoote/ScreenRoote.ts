@@ -89,8 +89,10 @@ export const Input = styled.input<InputProps>`
   height: ${({ height }) => (height ? `${height}px` : '48px')};
   border-radius: ${({ borderRadius }) =>
     borderRadius ? `${borderRadius}px` : "12px"};
-  border: ${({ border }) => border || "1px solid"};
+  border: ${({ border }) => border || "none"};
   border-color: ${({ borderColor }) => borderColor || "gray"};
+  box-shadow: ${({ boxShadow }) => boxShadow || '2px 4px 6px rgba(0, 0, 0, 0.5)'};
+  text-shadow: ${({ textShadow }) => textShadow || 'none'};
 
   &::placeholder {
     position: relative;
