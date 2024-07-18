@@ -96,7 +96,7 @@ export const Input = styled.input<InputProps>`
 
   &::placeholder {
     position: relative;
-    top: ${({ placeholderTop }) =>placeholderTop};
+    top: ${({ placeholderTop }) => placeholderTop};
     transform: ${({ transform }) =>
       transform !== undefined && `translateY(-${transform}%)`};
   }

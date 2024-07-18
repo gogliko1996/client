@@ -18,6 +18,7 @@ import {
   getTodo,
   updateTodo,
 } from "../../redux/reducers/todoreducer";
+import { DetealsModal } from "../DetealsModal/DetealsModal";
 
 export const Dnd: React.FC<DndProps> = (props) => {
   const { todoList } = props;
@@ -31,11 +32,13 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const [todos, setTodos] = useState<Dndtype[]>([]);
   const [inProgreses, setInProgreses] = useState<Dndtype[]>([]);
   const [done, setDone] = useState<Dndtype[]>([]);
+  const [details, setDetails] = useState<Dndtype>()
 
   const [draggedItem, setDraggedItem] = useState<Dndtype | null>(null);
   const [showTodoInput, setShowTodoInput] = useState<boolean>(false);
   const [showInProgresInput, setShowInProgresInput] = useState<boolean>(false);
   const [showDoneInput, setShowDoneInput] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -106,11 +109,16 @@ export const Dnd: React.FC<DndProps> = (props) => {
     );
   };
 
-  const detailsTodos = (option: string, id: number, source: string) => {
+  const detailsTodos = (option: string, item: Dndtype, source: string ) => {
+    if (option === "details") {
+      setDetails(item)
+      setShowModal(true);
+    }
+
     if (option === "delete") {
-      dispatch(deleteTodo(id)).then(() => {
+      dispatch(deleteTodo(item.id)).then(() => {
         dispatch(getTodo(userId));
-        handleDeleteTask(id, source);
+        handleDeleteTask(item.id, source);
       });
     }
   };
@@ -284,7 +292,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                         }
                       />
                       <IconButtom
-                        onClick={(e) => detailsTodos(e, item.id, "todo")}
+                        onClick={(e) => detailsTodos(e, item, "todo")}
                       />
                     </Row>
                   </Spacer>
@@ -307,6 +315,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                         width={240}
                         height={60}
                         name="description"
+                        transform={100}
                         type="text"
                         placeholder="descriptions"
                         value={createTodoList.description}
@@ -380,7 +389,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                           }
                         />
                         <IconButtom
-                          onClick={(e) => detailsTodos(e, item.id, "inProgres")}
+                          onClick={(e) => detailsTodos(e, item, "inProgres")}
                         />
                       </Row>
                     </Spacer>
@@ -403,6 +412,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                         <Input
                           width={240}
                           height={60}
+                          transform={100}
                           name="description"
                           type="text"
                           placeholder="descriptions"
@@ -472,7 +482,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                           }
                         />
                         <IconButtom
-                          onClick={(e) => detailsTodos(e, item.id, "done")}
+                          onClick={(e) => detailsTodos(e, item, "done")}
                         />
                       </Row>
                     </Spacer>
@@ -494,6 +504,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                         <Input
                           width={240}
                           height={60}
+                          transform={100}
                           name="description"
                           type="text"
                           placeholder="descriptions"
@@ -526,6 +537,42 @@ export const Dnd: React.FC<DndProps> = (props) => {
           </Card>
         </Spacer>
       </Row>
+
+      <DetealsModal isOpen={showModal} onClose={(e) => setShowModal(false)}>
+        <Conteiner width={250}>
+          <Spacer pl={10} pr={10} pt={10} pb={10}>
+            <Spacer mt={20} mb={40}>
+              <form onSubmit={(e) => e.preventDefault()}>
+                <Input
+                  height={35}
+                  name="title"
+                  type="text"
+                  placeholder={details?.title}
+                />
+                <Spacer mb={10} mt={10}>
+                  <Input
+                    height={60}
+                    transform={100}
+                    name="description"
+                    type="text"
+                    placeholder={details?.description}
+                  />
+                </Spacer>
+                <Row
+                  justifyContent="space-between"
+                  alignItems="center"
+                  width={150}
+                >
+                  <Text>Status:</Text>
+                  <Text color="green">{details?.status}</Text>
+                </Row>
+              </form>
+            </Spacer>
+
+            <Button onClick={() => setShowModal(false)}>close</Button>
+          </Spacer>
+        </Conteiner>
+      </DetealsModal>
     </div>
   );
 };

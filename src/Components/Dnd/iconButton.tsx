@@ -1,41 +1,43 @@
-import React, { useState } from 'react';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import React, { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 
 interface IconButtomProps {
-  onClick: (option: string) => void
+  onClick: (option: string) => void;
 }
 
-const options = [
-  'delete',
-  'Details'
-];
+const options = ["delete", "details"];
 
 const ITEM_HEIGHT = 48;
 
-export const  IconButtom: React.FC<IconButtomProps> = (props) => {
-  const {onClick} = props
+export const IconButtom: React.FC<IconButtomProps> = (props) => {
+  const { onClick } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  
   const handleClose = (option: string) => {
-    if(onClick) {
-      onClick(option)
+    if (onClick) {
+      onClick(option);
     }
     setAnchorEl(null);
   };
+
 
   return (
     <div>
       <IconButton
         aria-label="more"
         id="long-button"
-        aria-controls={open ? 'long-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
+        aria-controls={open ? "long-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleClick}
       >
@@ -44,7 +46,7 @@ export const  IconButtom: React.FC<IconButtomProps> = (props) => {
       <Menu
         id="long-menu"
         MenuListProps={{
-          'aria-labelledby': 'long-button',
+          "aria-labelledby": "long-button",
         }}
         anchorEl={anchorEl}
         open={open}
@@ -52,16 +54,21 @@ export const  IconButtom: React.FC<IconButtomProps> = (props) => {
         PaperProps={{
           style: {
             maxHeight: ITEM_HEIGHT * 4.5,
-            width: '20ch',
+            width: "20ch",
           },
         }}
       >
+        
         {options.map((option) => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={() => handleClose(option)}>
+          <MenuItem
+            key={option}
+            selected={option === "Pyxis"}
+            onClick={() => handleClose(option)}
+          >
             {option}
           </MenuItem>
         ))}
       </Menu>
     </div>
   );
-}
+};
