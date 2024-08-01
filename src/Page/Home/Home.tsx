@@ -19,8 +19,6 @@ import { Spacer } from "../../Components/Spacer/Spacer";
 import { Dnd } from "../../Components/Dnd/Dnd";
 
 export const Home: React.FC = () => {
- 
-
   // const [updateTodoList, setUpdateTodoList] = useState({
   //   title: "",
   //   description: "",
@@ -60,7 +58,7 @@ export const Home: React.FC = () => {
   return (
     <>
       <Spacer>
-      <Dnd  todoList={todos}/>
+        <Dnd todoList={todos} />
       </Spacer>
     </>
   );
