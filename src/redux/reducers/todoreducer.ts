@@ -113,6 +113,7 @@ const createTodoreducer = createSlice({
           ...action.payload.updateData,
         };
       }
+      
     },
 
     removeTodoOptimistic: (state, action: PayloadAction<number>) => {
@@ -125,6 +126,9 @@ const createTodoreducer = createSlice({
     },
     addTodoBack: (state, action: PayloadAction<TodoObject | any>) => {
       state.todos?.push(action.payload);
+    },
+    todoLogOut: (state) => {
+      state.todos = [];
     },
   },
 
@@ -188,6 +192,7 @@ export const {
   deleteTodoOptimistic,
   addTodoBack,
   updateTodoOptimistic,
+  todoLogOut
 } = createTodoreducer.actions;
 
 export default createTodoreducer.reducer;

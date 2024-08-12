@@ -17,6 +17,7 @@ import {
 } from "../../redux/reducers/todoreducer";
 import { Spacer } from "../../Components/Spacer/Spacer";
 import { Dnd } from "../../Components/Dnd/Dnd";
+import { Header } from "../../Components/Header/Header";
 
 export const Home: React.FC = () => {
   // const [updateTodoList, setUpdateTodoList] = useState({
@@ -57,6 +58,7 @@ export const Home: React.FC = () => {
 
   return (
     <>
+    <Header/>
       <Spacer>
         <Dnd todoList={todos} />
       </Spacer>

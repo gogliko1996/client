@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import api from "../../utils/api/api";
+import { todoLogOut } from "./todoreducer";
 
 interface UserState {
   status: boolean;
@@ -49,7 +50,13 @@ export const loginUser = createAsyncThunk(
 const createUserSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    logOut: (state) => {
+      localStorage.removeItem("accessToken");
+      state.user = null;
+      // action.payload.dispatch(todoLogOut())
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createUser.pending, (state) => {
@@ -71,13 +78,10 @@ const createUserSlice = createSlice({
       .addCase(getUser.pending, (state) => {
         state.status = true;
       })
-      .addCase(
-        getUser.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.status = false;
-          state.user = action.payload?.data.user;
-        }
-      )
+      .addCase(getUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.status = false;
+        state.user = action.payload?.data.user;
+      })
       .addCase(getUser.rejected, (state, action) => {
         state.status = false;
         state.error = action.error.message || "Failed to create user";
@@ -96,5 +100,7 @@ const createUserSlice = createSlice({
       });
   },
 });
+
+export const { logOut } = createUserSlice.actions;
 
 export default createUserSlice.reducer;
