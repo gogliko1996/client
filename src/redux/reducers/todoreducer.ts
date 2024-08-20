@@ -66,7 +66,6 @@ export const updateTodo = createAsyncThunk(
 export const deleteTodo = createAsyncThunk(
   "todo/deleteTodo",
   async (id: number, { dispatch }) => {
-    dispatch(deleteTodoOptimistic(id));
 
     try {
       await api.delete(`/deleteTodo/${id}`);

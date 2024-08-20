@@ -174,8 +174,6 @@ export const Dnd: React.FC<DndProps> = (props) => {
 
   useEffect(() => {
     ws.addEventListener("message", (event) => {
-      console.log(JSON.parse(event.data).payload);
-
       const data = JSON.parse(event.data);
       const dataType = data.type;
 
@@ -208,6 +206,13 @@ export const Dnd: React.FC<DndProps> = (props) => {
           { title, id, description, status },
         ]);
       }
+
+      if (dataType === "Delete") {
+        wheremovetheobject(
+          removedObject.filter((item) => item.id !== id)
+        );
+      }
+
       if (status === startStatus) return;
 
       if (dataType === "UPDATE_TODO") {
