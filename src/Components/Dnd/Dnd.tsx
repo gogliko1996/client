@@ -39,7 +39,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const [showInProgresInput, setShowInProgresInput] = useState<boolean>(false);
   const [showDoneInput, setShowDoneInput] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  
+
   const ws = new WebSocket("ws://localhost:8000");
   
   const dispatch = useDispatch<AppDispatch>();
@@ -174,7 +174,6 @@ export const Dnd: React.FC<DndProps> = (props) => {
 
   useEffect(() => {
     ws.addEventListener("message", (event) => {
-      console.log(JSON.parse(event.data));
       const { title, id, description, status, startStatus } = JSON.parse(
         event.data
       );
