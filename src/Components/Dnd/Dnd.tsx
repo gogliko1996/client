@@ -13,6 +13,7 @@ import { IconButtom } from "./iconButton";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/reducerStore/store";
 import {
+  addTodoOptimistic,
   creatTodo,
   deleteTodo,
   getTodo,
@@ -41,10 +42,11 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const ws = new WebSocket("ws://localhost:8000");
-  
+
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const user = useSelector((state: RootState) => state.createUser.user);
+  const { status } = useSelector((state: RootState) => state.todolist);
 
   const userId = user.id;
 
@@ -147,7 +149,6 @@ export const Dnd: React.FC<DndProps> = (props) => {
 
     const heretofindtheobject =
       source === "inProgres" ? inProgreses : source === "todo" ? todos : done;
-   
 
     if (source === target) return;
 
@@ -171,12 +172,14 @@ export const Dnd: React.FC<DndProps> = (props) => {
     setDraggedItem(null);
   };
 
-
   useEffect(() => {
     ws.addEventListener("message", (event) => {
-      const { title, id, description, status, startStatus } = JSON.parse(
-        event.data
-      );
+      console.log(JSON.parse(event.data).payload);
+
+      const data = JSON.parse(event.data);
+      const dataType = data.type;
+
+      const { title, id, description, status, startStatus } = data.payload;
 
       const heretofindtheobject =
         startStatus === "inProgres"
@@ -185,13 +188,9 @@ export const Dnd: React.FC<DndProps> = (props) => {
           ? todos
           : done;
       const removedObject =
-      status === "inProgres"
-          ? inProgreses
-          : status === "todo"
-          ? todos
-          : done;
+        status === "inProgres" ? inProgreses : status === "todo" ? todos : done;
       const wheremovetheobject =
-      status === "inProgres"
+        status === "inProgres"
           ? setInProgreses
           : status === "todo"
           ? setTodos
@@ -203,15 +202,23 @@ export const Dnd: React.FC<DndProps> = (props) => {
           ? setTodos
           : setDone;
 
+      if (dataType === "Create_User") {
+        wheremovetheobject([
+          ...removedObject,
+          { title, id, description, status },
+        ]);
+      }
       if (status === startStatus) return;
 
-      wheretofiltertheobject(
-        heretofindtheobject.filter((item) => item.id !== id)
-      );
-      wheremovetheobject([
-        ...removedObject,
-        { title, id, description, status, startStatus },
-      ]);
+      if (dataType === "UPDATE_TODO") {
+        wheretofiltertheobject(
+          heretofindtheobject.filter((item) => item.id !== id)
+        );
+        wheremovetheobject([
+          ...removedObject,
+          { title, id, description, status, startStatus },
+        ]);
+      }
     });
 
     ws.onerror = (error) => {

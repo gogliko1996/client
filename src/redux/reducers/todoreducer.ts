@@ -29,8 +29,6 @@ export const creatTodo = createAsyncThunk(
     const todos: TodoObject[] | null = state.todolist.todos || [];
     const lastElement: TodoObject = todos[todos.length - 1];
     const tempId: number = lastElement ? Number(lastElement.id) + 1 : 1;
-    
-    dispatch(addTodoOptimistic({ ...todoList, id: tempId }));
 
     try {
       const response = await api.post("/todo", todoList);
@@ -55,10 +53,9 @@ export const updateTodo = createAsyncThunk(
   "todo/updateTodo",
   async (
     { id, updateData }: { id: number; updateData: TodoObject },
-    { dispatch, rejectWithValue }
+    { rejectWithValue }
   ) => {
     try {
-      // dispatch(updateTodoOptimistic({ id, updateData }));
       await api.patch(`/updateTodo/${id}`, updateData);
     } catch (error: any) {
       return rejectWithValue(error.message);
