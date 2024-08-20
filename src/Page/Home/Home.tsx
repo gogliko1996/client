@@ -12,6 +12,7 @@ import {
   // creatTodo,
   // deleteTodo,
   getTodo,
+  updateTodoOptimistic,
   // TodoObject,
   // updateTodo,
 } from "../../redux/reducers/todoreducer";
@@ -35,22 +36,6 @@ export const Home: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  // const updateHandleChange = (e: any) => {
-  //   setUpdateTodoList({
-  //     ...updateTodoList,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
-
-  // const handleUpdate = (todo: TodoObject) => {
-  //   setUpdateTodoList({
-  //     title: todo.title,
-  //     description: todo.description,
-  //     status: todo.status,
-  //   });
-  //   setIsEditing(true);
-  //   setCurrentTodoId(Number(todo.id));
-  // };
 
   useEffect(() => {
     dispatch(getTodo(userId));
@@ -58,7 +43,7 @@ export const Home: React.FC = () => {
 
   return (
     <>
-    <Header/>
+      <Header />
       <Spacer>
         <Dnd todoList={todos} />
       </Spacer>

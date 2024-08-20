@@ -6,6 +6,7 @@ export interface TodoObject {
   title: string;
   description: string;
   status: string;
+  startStatus?: string;
   id?: number ;
   userId?: string;
 }
@@ -57,7 +58,7 @@ export const updateTodo = createAsyncThunk(
     { dispatch, rejectWithValue }
   ) => {
     try {
-      dispatch(updateTodoOptimistic({ id, updateData }));
+      // dispatch(updateTodoOptimistic({ id, updateData }));
       await api.patch(`/updateTodo/${id}`, updateData);
     } catch (error: any) {
       return rejectWithValue(error.message);

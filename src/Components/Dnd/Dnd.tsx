@@ -39,9 +39,11 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const [showInProgresInput, setShowInProgresInput] = useState<boolean>(false);
   const [showDoneInput, setShowDoneInput] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-
+  
+  const ws = new WebSocket("ws://localhost:8000");
+  
   const dispatch = useDispatch<AppDispatch>();
-
+  
   const user = useSelector((state: RootState) => state.createUser.user);
 
   const userId = user.id;
@@ -97,7 +99,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
     });
   };
 
-  const hundlerSubmit = (target: string) => {    
+  const hundlerSubmit = (target: string) => {
     dispatch(creatTodo({ ...createTodoList, status: target, userId })).then(
       () => {
         setCreateTodoList({
@@ -145,42 +147,82 @@ export const Dnd: React.FC<DndProps> = (props) => {
 
     const heretofindtheobject =
       source === "inProgres" ? inProgreses : source === "todo" ? todos : done;
-    const removedObject =
-      target === "inProgres" ? inProgreses : target === "todo" ? todos : done;
-    const wheremovetheobject =
-      target === "inProgres"
-        ? setInProgreses
-        : target === "todo"
-        ? setTodos
-        : setDone;
-    const wheretofiltertheobject =
-      source === "inProgres"
-        ? setInProgreses
-        : source === "todo"
-        ? setTodos
-        : setDone;
+   
 
     if (source === target) return;
 
     const todo = heretofindtheobject.find((item) => item.id === id)!;
-    const cangeStatusTodo = {...todo, status: target}
-    wheretofiltertheobject(
-      heretofindtheobject.filter((item) => item.id !== id)
-    );
-    wheremovetheobject([...removedObject, cangeStatusTodo]);
 
     const { title, description } = todo;
     if (title && description) {
       dispatch(
         updateTodo({
           id: Number(todo.id),
-          updateData: { title, description, status: target },
+          updateData: {
+            title,
+            description,
+            status: target,
+            startStatus: source,
+          },
         })
       );
     }
 
     setDraggedItem(null);
   };
+
+
+  useEffect(() => {
+    ws.addEventListener("message", (event) => {
+      console.log(JSON.parse(event.data));
+      const { title, id, description, status, startStatus } = JSON.parse(
+        event.data
+      );
+
+      const heretofindtheobject =
+        startStatus === "inProgres"
+          ? inProgreses
+          : startStatus === "todo"
+          ? todos
+          : done;
+      const removedObject =
+      status === "inProgres"
+          ? inProgreses
+          : status === "todo"
+          ? todos
+          : done;
+      const wheremovetheobject =
+      status === "inProgres"
+          ? setInProgreses
+          : status === "todo"
+          ? setTodos
+          : setDone;
+      const wheretofiltertheobject =
+        startStatus === "inProgres"
+          ? setInProgreses
+          : startStatus === "todo"
+          ? setTodos
+          : setDone;
+
+      if (status === startStatus) return;
+
+      wheretofiltertheobject(
+        heretofindtheobject.filter((item) => item.id !== id)
+      );
+      wheremovetheobject([
+        ...removedObject,
+        { title, id, description, status, startStatus },
+      ]);
+    });
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  });
 
   const handleInputChange = (id: number, value: string, source: string) => {
     if (source === "todo") {
