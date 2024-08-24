@@ -13,3 +13,21 @@ export interface Dndtype {
 export interface DndProps {
   todoList: TodoObject[] | null;
 }
+
+export type Status = "inProgres" | "todo" | "done"
+
+
+export interface StatusMap {
+  inProgres: {
+    list: Dndtype[];
+    setList: React.Dispatch<React.SetStateAction<Dndtype[]>>;
+  };
+  todo: {
+    list: Dndtype[];
+    setList: React.Dispatch<React.SetStateAction<Dndtype[]>>;
+  };
+  done: {
+    list: Dndtype[];
+    setList: React.Dispatch<React.SetStateAction<Dndtype[]>>;
+  };
+}

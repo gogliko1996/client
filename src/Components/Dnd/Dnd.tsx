@@ -8,12 +8,11 @@ import {
   Text,
 } from "../ScreenRoote/ScreenRoote";
 import { Spacer } from "../Spacer/Spacer";
-import { DndProps, Dndtype } from "./dndPops";
+import { DndProps, Dndtype, StatusMap, Status } from "./dndPops";
 import { IconButtom } from "./iconButton";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/reducerStore/store";
 import {
-  addTodoOptimistic,
   creatTodo,
   deleteTodo,
   getTodo,
@@ -46,9 +45,23 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const user = useSelector((state: RootState) => state.createUser.user);
-  const { status } = useSelector((state: RootState) => state.todolist);
 
   const userId = user.id;
+
+  const statusMap: StatusMap = {
+    inProgres: {
+      list: inProgreses,
+      setList: setInProgreses,
+    },
+    todo: {
+      list: todos,
+      setList: setTodos,
+    },
+    done: {
+      list: done,
+      setList: setDone,
+    },
+  };
 
   useEffect(() => {
     todoList?.map((item) => {
@@ -179,26 +192,10 @@ export const Dnd: React.FC<DndProps> = (props) => {
 
       const { title, id, description, status, startStatus } = data.payload;
 
-      const heretofindtheobject =
-        startStatus === "inProgres"
-          ? inProgreses
-          : startStatus === "todo"
-          ? todos
-          : done;
-      const removedObject =
-        status === "inProgres" ? inProgreses : status === "todo" ? todos : done;
-      const wheremovetheobject =
-        status === "inProgres"
-          ? setInProgreses
-          : status === "todo"
-          ? setTodos
-          : setDone;
-      const wheretofiltertheobject =
-        startStatus === "inProgres"
-          ? setInProgreses
-          : startStatus === "todo"
-          ? setTodos
-          : setDone;
+      const heretofindtheobject = statusMap[startStatus as Status]?.list;
+      const removedObject = statusMap[status as Status]?.list;
+      const wheremovetheobject = statusMap[status as Status]?.setList;
+      const wheretofiltertheobject = statusMap[startStatus as Status]?.setList;
 
       if (dataType === "Create_User") {
         wheremovetheobject([
@@ -208,9 +205,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
       }
 
       if (dataType === "Delete") {
-        wheremovetheobject(
-          removedObject.filter((item) => item.id !== id)
-        );
+        wheremovetheobject(removedObject.filter((item) => item.id !== id));
       }
 
       if (status === startStatus) return;
