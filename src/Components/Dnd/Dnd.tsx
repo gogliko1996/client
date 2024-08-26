@@ -40,13 +40,13 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const [showDoneInput, setShowDoneInput] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const ws = new WebSocket("ws://localhost:8000");
-
+  
   const dispatch = useDispatch<AppDispatch>();
-
+  
   const user = useSelector((state: RootState) => state.createUser.user);
-
+  
   const userId = user.id;
+  const ws = new WebSocket("ws://localhost:8000", userId);
 
   const statusMap: StatusMap = {
     inProgres: {
