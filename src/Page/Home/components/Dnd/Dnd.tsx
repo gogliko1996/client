@@ -1,4 +1,17 @@
 import React, { ChangeEvent, DragEvent, useEffect, useState } from "react";
+import { Spacer } from "../../../../components/Spacer/Spacer";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../redux/reducerStore/store";
+
+import { DetealsModal } from "../../../../components/DetealsModal/DetealsModal";
+import { IconButtom } from "./iconButton";
+import { DndProps, Dndtype, StatusMap, Status } from "./dndPops";
+import {
+  creatTodo,
+  deleteTodo,
+  getTodo,
+  updateTodo,
+} from "../../redux/todoreducer";
 import {
   Button,
   Card,
@@ -6,19 +19,7 @@ import {
   Input,
   Row,
   Text,
-} from "../ScreenRoote/ScreenRoote";
-import { Spacer } from "../Spacer/Spacer";
-import { DndProps, Dndtype, StatusMap, Status } from "./dndPops";
-import { IconButtom } from "./iconButton";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/reducerStore/store";
-import {
-  creatTodo,
-  deleteTodo,
-  getTodo,
-  updateTodo,
-} from "../../redux/reducers/todoreducer";
-import { DetealsModal } from "../DetealsModal/DetealsModal";
+} from "../../../../components/ScreenRoote/ScreenRoote";
 
 export const Dnd: React.FC<DndProps> = (props) => {
   const { todoList } = props;
@@ -40,11 +41,10 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const [showDoneInput, setShowDoneInput] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const user = useSelector((state: RootState) => state.createUser.user);
-  
+
   const userId = user.id;
   const ws = new WebSocket("ws://localhost:8000", userId);
 
@@ -230,7 +230,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
     };
   });
 
-  const handleInputChange = (id: number, value: string, source: string) => {
+  const handleInputChange = (id: number, value: any, source: string) => {
     if (source === "todo") {
       setTodos(
         todos.map((item) => (item.id === id ? { ...item, value: value } : item))
@@ -306,7 +306,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
             paddingBottom={30}
             minHeight={100}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "todo")}
+            onDrop={(e: DragEvent<HTMLDivElement>,) => handleDrop(e, "todo")}
           >
             <Conteiner>
               <Row justifyContent="space-between">
@@ -316,7 +316,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                 <Conteiner
                   key={item.id}
                   draggable
-                  onDragStart={(e) => handleDragStart(e, item.id, "todo")}
+                  onDragStart={(e: DragEvent<HTMLDivElement>,) => handleDragStart(e, item.id, "todo")}
                 >
                   <Spacer mb={10}>
                     <Spacer mb={-10}>
@@ -329,7 +329,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                         height={35}
                         placeholder={item.title}
                         disabled
-                        onChange={(e) =>
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           handleInputChange(item.id, e.target.value, "todo")
                         }
                       />
@@ -396,7 +396,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
             paddingRight={10}
             paddingBottom={30}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "inProgres")}
+            onDrop={(e: DragEvent<HTMLDivElement>,) => handleDrop(e, "inProgres")}
           >
             <Conteiner>
               <Row>
@@ -407,7 +407,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                   <Conteiner
                     key={item.id}
                     draggable
-                    onDragStart={(e) =>
+                    onDragStart={(e: DragEvent<HTMLDivElement>,) =>
                       handleDragStart(e, item.id, "inProgres")
                     }
                   >
@@ -422,7 +422,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                           height={35}
                           placeholder={item.title}
                           disabled
-                          onChange={(e) =>
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleInputChange(
                               item.id,
                               e.target.value,
@@ -495,7 +495,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
             paddingRight={10}
             paddingBottom={30}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "done")}
+            onDrop={(e: DragEvent<HTMLDivElement>,) => handleDrop(e, "done")}
           >
             <Conteiner>
               <Row>
@@ -506,7 +506,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                   <Conteiner
                     key={item.id}
                     draggable
-                    onDragStart={(e) => handleDragStart(e, item.id, "done")}
+                    onDragStart={(e: DragEvent<HTMLDivElement>,) => handleDragStart(e, item.id, "done")}
                   >
                     <Spacer mb={10}>
                       <Spacer mb={-10}>
@@ -519,7 +519,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
                           height={35}
                           placeholder={item.title}
                           disabled
-                          onChange={(e) =>
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleInputChange(item.id, e.target.value, "done")
                           }
                         />

@@ -1,26 +1,21 @@
 import React, { useState } from "react";
-import {
-  Card,
-  Content,
-  Input,
-  Row,
-  ScreenContent,
-} from "../../Components/ScreenRoote/ScreenRoote";
-import { Spacer } from "../../Components/Spacer/Spacer";
+import { AppDispatch } from "../../../redux/reducerStore/store";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { screen } from "../../routes/routeName";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/reducerStore/store";
-import { loginUser, getUser } from "../../redux/reducers/userReducer";
+import { createUser } from "../redux/userReducer";
+import { screen } from "../../../routes/routeName";
+import { Card, Content, Input, Row, ScreenContent } from "../../../components/ScreenRoote/ScreenRoote";
+import { Spacer } from "../../../components/Spacer/Spacer";
 
-export const SignIn = () => {
-  const creatUser = useSelector((state: RootState) => state.createUser.createUser);
+export const SignUp: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [userObject, setUserObject] = useState({
-    email: creatUser.email ? creatUser.email : "",
+    firstName: "",
+    lastName: "",
+    email: "",
     password: "",
   });
-
-  const dispatch = useDispatch<AppDispatch>();
 
   const navigate = useNavigate();
 
@@ -33,13 +28,9 @@ export const SignIn = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(loginUser(userObject)).then((data) => {
-      if (data.type === "user/loginUser/fulfilled") {
-        dispatch(getUser()).then((user) => {
-          if (user.type === "getUser/user/fulfilled") {
-            navigate(screen.home);
-          }
-        });
+    dispatch(createUser(userObject)).then((data) => {
+      if (data.type === "user/createUser/fulfilled") {
+        navigate(screen.signIn);
       }
     });
   };
@@ -56,6 +47,24 @@ export const SignIn = () => {
             paddingTop={10}
           >
             <form onSubmit={handleSubmit} autoComplete="off">
+              <Spacer mt={20} mb={20}>
+                <Input
+                  type="text"
+                  name="firstName"
+                  value={userObject.firstName}
+                  onChange={handleChange}
+                />
+              </Spacer>
+
+              <Spacer mt={20} mb={20}>
+                <Input
+                  type="text"
+                  name="lastName"
+                  value={userObject.lastName}
+                  onChange={handleChange}
+                />
+              </Spacer>
+
               <Input
                 type="email"
                 name="email"
@@ -72,8 +81,8 @@ export const SignIn = () => {
               </Spacer>
               <Row justifyContent="space-between">
                 <button type="submit">Submit</button>
-                <button type="button" onClick={() => navigate(screen.signUp)}>
-                  SignUp
+                <button type="button" onClick={() => navigate(screen.signIn)}>
+                  SignIn
                 </button>
               </Row>
             </form>

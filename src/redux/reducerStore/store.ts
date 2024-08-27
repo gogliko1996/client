@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { thunk, ThunkMiddleware } from 'redux-thunk'; 
-import  createUserSlice  from '../reducers/userReducer';
-import createTodoreducer from '../reducers/todoreducer'
+import createTodoreducer from '../../page/Home/redux/todoreducer'
+import createUserSlice from '../../page/Auth/redux/userReducer'
 
 const rootReducer = combineReducers({
   createUser: createUserSlice,

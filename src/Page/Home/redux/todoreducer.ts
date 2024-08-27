@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import api from "../../utils/api/api";
-import { RootState } from "../reducerStore/store";
+import { RootState } from "../../../redux/reducerStore/store";
+import api from "../../../utils/api/api";
 
 export interface TodoObject {
   title: string;

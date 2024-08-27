@@ -1,10 +1,11 @@
 import React, { ReactElement } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { screen } from "../routeName";
-import { Home } from "../../Page/Home/Home";
-import { SignIn } from "../../Page/SignIn/SignIn";
-import { SignUp } from "../../Page/SignUp/SignUp";
+import { Home } from "../../page/Home/Home";
+
 import { useSelector } from "react-redux";
+import { SignIn } from "../../page/Auth/SignIn/SignIn";
+import { SignUp } from "../../page/Auth/SignUp/SignUp";
 
 interface ProtectedRouteProps {
   user: boolean;

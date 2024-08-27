@@ -1,4 +1,5 @@
-import { TodoObject } from "../../redux/reducers/todoreducer";
+import { TodoObject } from "../../redux/todoreducer";
+
 
 export interface Dndtype {
   id: number;

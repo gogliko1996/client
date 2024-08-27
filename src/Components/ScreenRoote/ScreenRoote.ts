@@ -1,15 +1,8 @@
+
 import styled from "styled-components";
-import {
-  ButtonProps,
-  CardProps,
-  ConteinerProps,
-  ImageProps,
-  InputProps,
-  RowProps,
-  Selectprops,
-  TextProps,
-} from "./ScreenRoot.props";
 import { colors } from "../../utils/colors/colors";
+import { ButtonProps, CardProps, ConteinerProps, ImageProps, InputProps, RowProps, Selectprops, TextProps } from "./ScreenRoot.props";
+
 
 export const ScreenContent = styled.div`
   width: 100%;

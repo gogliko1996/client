@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import api from "../../utils/api/api";
-import { todoLogOut } from "./todoreducer";
+import api from "../../../utils/api/api";
 
 interface UserState {
   status: boolean;

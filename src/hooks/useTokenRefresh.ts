@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import api from "../utils/api/api";
-import { getUser } from "../redux/reducers/userReducer";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/reducerStore/store";
 import { screen } from "../routes/routeName";
 import { useNavigate } from "react-router-dom";
+import { getUser } from "../page/Auth/redux/userReducer";
 
 const useTokenRefresh = () => {
   const dispatch = useDispatch<AppDispatch>();
