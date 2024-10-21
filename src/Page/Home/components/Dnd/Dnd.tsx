@@ -46,6 +46,7 @@ export const Dnd: React.FC<DndProps> = (props) => {
   const user = useSelector((state: RootState) => state.createUser.user);
 
   const userId = user.id;
+  
   const ws = new WebSocket("ws://localhost:8000", userId);
 
   const statusMap: StatusMap = {
